@@ -16,11 +16,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameLoop gameLoop;
     private  Player player;
     private Joystick joystick;
-    private Background background;
-    private River river;//todo
+    private BackgroundAndRiver backgroundAndRiver;//todo
     private GameInfo gameInfo;
     private GamePoint gamePoint;
-    private Canvas canvas;
     public Game(Context context) {
         super(context);
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
@@ -33,9 +31,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         gameLoop = new GameLoop(this,surfaceHolder);
 
-        river = new River();
+        backgroundAndRiver = new BackgroundAndRiver(height,width,15,2);
 
-        background = new Background(height,width);
 
         gameInfo = new GameInfo(height/8,width);
 
@@ -85,8 +82,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        background.draw(canvas);
-        river.draw(canvas);
+        backgroundAndRiver.draw(canvas);
         gameInfo.draw(canvas);
         joystick.draw(canvas);
         player.draw(canvas);
@@ -114,10 +110,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+        backgroundAndRiver.update();
         gamePoint.update();
         joystick.update();
         player.update(joystick);
-        river.update();
         gameInfo.update();
     }
 }

@@ -14,6 +14,7 @@ public class Background {
 
 
 
+
     public Background(double high, double width) {
         this.high = high;
         this.width = width;
@@ -29,4 +30,7 @@ public class Background {
         canvas.drawRect(this.rect,this.paint);
     }
 
+    public void update() {
+        this.paint.setColor(Color.rgb(18,51,5));
+    }
 }
