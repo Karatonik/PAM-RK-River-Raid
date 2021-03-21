@@ -17,8 +17,12 @@ public class Player {
     private Bitmap bitmapPlayer;
     private double playerMaxSpeed;
     private Context context;
+    private double centerWidth;
+    private int hpLevel;
 
-    public Player(Context context, double playerPosX, double playerPosY, double playerMaxSpeed) {
+    public Player(Context context,double centerWidth, double playerPosX, double playerPosY, double playerMaxSpeed) {
+        hpLevel=3;
+        this.centerWidth=centerWidth;
         this.context=context;
         this.playerPosX = playerPosX;
         this.playerPosY = playerPosY;
@@ -42,6 +46,9 @@ public class Player {
         }
 
     }
+    public int getHpLevel(){
+        return  this.hpLevel;
+    };
     
     
 
@@ -50,9 +57,31 @@ public class Player {
         canvas.drawBitmap(this.bitmapPlayer, (float)this.playerPosX,(float) this.playerPosY, this.paint);
     }
 
-    public void update(Joystick joystick) {
+    public double getPlayerPosX() {
+        return playerPosX;
+    }
+
+    public double getPlayerPosY() {
+        return playerPosY;
+    }
+
+    public void update(Joystick joystick, double maxWidth) {
         setPlayerRotation(joystick.getActuatorX());
 
-        playerPosX =playerPosX+joystick.getActuatorX()*playerMaxSpeed;
+        double temp=playerPosX+joystick.getActuatorX()*playerMaxSpeed;
+        if(playerPosX<centerWidth-maxWidth-bitmapPlayer.getWidth()){
+            playerPosX=centerWidth;
+            hpLevel--;
+        }
+        if(playerPosX>centerWidth+maxWidth-bitmapPlayer.getWidth()){
+            playerPosX=centerWidth;
+            hpLevel--;
+        }
+
+        //jak trafi w wyspę todo
+
+        if((temp>=centerWidth-maxWidth)&&(temp<=(centerWidth+maxWidth-bitmapPlayer.getWidth()))){
+            playerPosX=temp;
+        }
     }
 }

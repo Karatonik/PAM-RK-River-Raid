@@ -1,5 +1,8 @@
 package pl.r.river_raid_mobile;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,15 +12,23 @@ public class GameInfo {
     private double high;
     private double width;
     private double fuelLevel;
-
-    public GameInfo(double high, double width) {
+    private Context context;
+    private Bitmap bitmapHp;
+    private int hpLevel;
+    public GameInfo(Context context,double high, double width) {
+        this.hpLevel=3;
         this.high = high;
         this.width = width;
         this.fuelLevel=12;
-
-
+        this.context=context;
+         this.bitmapHp= BitmapFactory.decodeResource(context.getResources(),R.drawable.player);
 
     }
+
+    public void setHpLevel(int hpLevel) {
+        this.hpLevel = hpLevel;
+    }
+
     public void subtractFuel(){
         if(fuelLevel>0) {
             fuelLevel = fuelLevel - 0.01;
@@ -62,11 +73,17 @@ public class GameInfo {
         paint.setStrokeWidth(20);
         canvas.drawLine((16*partOfWidth)-((float) (12-fuelLevel)*partOfWidth),14*partOfHigh,
                 (16*partOfWidth)-((float) (12-fuelLevel)*partOfWidth),18*partOfHigh,paint);
-        //trzeba zapiać ile jest nie dzielić bo nie działa
 
+
+        //hp
+
+        for(int i =0;i<hpLevel;i++){
+            canvas.drawBitmap(this.bitmapHp,(13+(i*2))*partOfWidth ,2*partOfHigh, paint);
+        }
     }
 
-    public void update() {
+    public void update(int hpLevel) {
+        this.hpLevel = hpLevel;
         subtractFuel();
     }
 

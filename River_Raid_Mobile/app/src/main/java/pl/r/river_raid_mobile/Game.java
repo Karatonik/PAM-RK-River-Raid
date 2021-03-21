@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
@@ -19,6 +22,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private BackgroundAndRiver backgroundAndRiver;//todo
     private GameInfo gameInfo;
     private GamePoint gamePoint;
+    private ShootButton shootButton;
+    private Shoot shoot;
+    //private FuelGenerator fuelGenerator;
     public Game(Context context) {
         super(context);
         DisplayMetrics metrics = this.getResources().getDisplayMetrics();
@@ -31,14 +37,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         gameLoop = new GameLoop(this,surfaceHolder);
 
-        backgroundAndRiver = new BackgroundAndRiver(height,width,15,2);
+        backgroundAndRiver = new BackgroundAndRiver(getContext(),height,width,30,5);
 
+        gameInfo = new GameInfo(getContext(),height/8,width);
 
-        gameInfo = new GameInfo(height/8,width);
+        joystick = new Joystick((int) (width/4),(int)(9*(height/10)),(int)(height/14),(int)(height/16));
 
-        joystick = new Joystick((int) (width/2+10),(int)(9*(height/10)),150,120);
+        shootButton = new ShootButton(getContext(),(int)(2*(height/10)),(int)(2*(height/10)));
+        shootButton.setPosition( (float) (3*(width/4)-(height/12)),(float) (9*(height/10)-(height/12)));
 
-        player = new Player(getContext(),(width/2)-50,6*(height/8)-50,15);
+        player = new Player(getContext(),width/2,(width/2),6*(height/8),15);
+        shoot = new Shoot(getContext(),player,(float) height/8,20);
 
 
         setFocusable(true);
@@ -47,6 +56,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event){
     switch (event.getAction()){
         case MotionEvent.ACTION_DOWN:
+            //shoot
+            shootButton.isPressed(event.getX(),event.getY(),shoot.isInMove());
+
             if(joystick.isPressed(event.getX(),event.getY())){
                 joystick.setIsPressed(true);
             }
@@ -79,13 +91,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
         backgroundAndRiver.draw(canvas);
         gameInfo.draw(canvas);
+        //fuelGenerator.draw(canvas);
         joystick.draw(canvas);
+        shootButton.draw(canvas);
         player.draw(canvas);
+        shoot.draw(canvas);
         gamePoint.draw(canvas);
         drawFPS(canvas);
         drawUPS(canvas);
@@ -109,11 +125,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText("FPS:"+averageFPS.substring(0,2),50,200,paint);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void update() {
-        backgroundAndRiver.update();
+        backgroundAndRiver.update(shoot, gamePoint);
         gamePoint.update();
         joystick.update();
-        player.update(joystick);
-        gameInfo.update();
+        player.update(joystick,backgroundAndRiver.getWidthForPlayerMove());
+        shoot.update(shootButton,(float) player.getPlayerPosX());
+        //fuelGenerator.update(backgroundAndRiver);
+        gameInfo.update(player.getHpLevel());
     }
 }

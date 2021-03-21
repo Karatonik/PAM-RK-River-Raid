@@ -27,7 +27,7 @@ public class GamePoint {
     }
 
     public void setPoints(int points) {
-        this.points = points;
+        this.points += points;
     }
 
     public void draw(Canvas canvas) {
@@ -37,6 +37,6 @@ public class GamePoint {
     }
 
     public void update() {
-        addPoint();
+
     }
 }
