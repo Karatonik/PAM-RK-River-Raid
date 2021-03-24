@@ -18,10 +18,8 @@ public class Player {
     private double playerMaxSpeed;
     private Context context;
     private double centerWidth;
-    private int hpLevel;
 
     public Player(Context context,double centerWidth, double playerPosX, double playerPosY, double playerMaxSpeed) {
-        hpLevel=3;
         this.centerWidth=centerWidth;
         this.context=context;
         this.playerPosX = playerPosX;
@@ -46,13 +44,7 @@ public class Player {
         }
 
     }
-    public int getHpLevel(){
-        return  this.hpLevel;
-    };
 
-    public void setHpLevel(int hpLevel) {
-        this.hpLevel = hpLevel;
-    }
 
     public void draw(Canvas canvas) {
         this.paint.setColor(Color.RED);
@@ -67,17 +59,17 @@ public class Player {
         return playerPosY;
     }
 
-    public void update(Joystick joystick, double maxWidth) {
+    public void update(Joystick joystick, double maxWidth,GameInfo gameInfo) {
         setPlayerRotation(joystick.getActuatorX());
 
         double temp=playerPosX+joystick.getActuatorX()*playerMaxSpeed;
         if(playerPosX<centerWidth-maxWidth-bitmapPlayer.getWidth()){
             playerPosX=centerWidth;
-            hpLevel--;
+           gameInfo.subtractHpLevel();
         }
         if(playerPosX>centerWidth+maxWidth-bitmapPlayer.getWidth()){
             playerPosX=centerWidth;
-            hpLevel--;
+            gameInfo.subtractHpLevel();
         }
 
         //jak trafi w wyspę todo

@@ -20,7 +20,7 @@ public class GameInfo {
     private Bitmap bitmapHp;
     private int hpLevel;
     public GameInfo(Context context,double high, double width) {
-        this.hpLevel=1;
+        this.hpLevel=3;
         this.high = high;
         this.width = width;
         this.fuelLevel=12;
@@ -97,8 +97,7 @@ public class GameInfo {
         return hpLevel;
     }
 
-    public void update(int hpLevel) {
-        this.hpLevel = hpLevel;
+    public void update() {
         subtractFuel();
     }
 

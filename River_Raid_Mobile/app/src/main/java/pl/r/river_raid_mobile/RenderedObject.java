@@ -94,7 +94,7 @@ public class RenderedObject {
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp);
                 }else {
                     renderedObjectEnum = RenderedObjectEnum.exp;
-                    player.setHpLevel(player.getHpLevel()-1);
+                    gameInfo.subtractHpLevel();
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp);
                 }
             }

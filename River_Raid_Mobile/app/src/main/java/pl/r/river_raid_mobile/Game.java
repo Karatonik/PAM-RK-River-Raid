@@ -184,10 +184,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             controller.update(shoot, gamePoint,player ,gameInfo);
             gamePoint.update();
             joystick.update();
-            player.update(joystick, controller.getWidthForPlayerMove());
+            player.update(joystick, controller.getWidthForPlayerMove(),gameInfo);
             shoot.update(shootButton, (float) player.getPlayerPosX());
-            gameInfo.update(player.getHpLevel());
-            if(player.getHpLevel()==0){//brak żyć wraca do start
+            gameInfo.update();
+            if(gameInfo.getHpLevel()==0){//brak żyć wraca do start
                 loseGame=true;
                 onMenu=true;
                 loadMenu();
