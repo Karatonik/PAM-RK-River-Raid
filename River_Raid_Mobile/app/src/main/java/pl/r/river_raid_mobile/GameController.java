@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import pl.r.river_raid_mobile.enums.RenderedObjectEnum;
 
-public class BackgroundAndRiver {
+public class GameController {
 
     private Context context;
 
@@ -70,30 +70,19 @@ public class BackgroundAndRiver {
     private RectF rect;
 
 
-    public BackgroundAndRiver(Context context, double high, double width, int segmentNumber, long renderSpeed) {
-
-        this.context=context;
-
-        this.renderedObjectList=new ArrayList<>();
-        this.generateIterator=segmentNumber;
-        this.lastGeneratedValue=400;
-        this.renderIterator=0;
-        this.segmentNumber=segmentNumber;
-        this.renderSpeed=renderSpeed;
-        afterRender=false;
-        afterRender=true;
-
-        this.high = high;
-        this.width = width;
 
 
 
-        this.centerPointWidth =(float)( width/2);
 
-        this.highSegment=(float)(high/(segmentNumber-1));
 
-        this.random = new Random();
+    //generowanie obiektów na mapie - iteratory()
+    int helicopterIterator , boatIterator,bridgeIterator,fuelIterator;
+    int helicopterItMax , boatItMax, bridgeIMax,fuelItMax;
 
+
+
+
+    public void initDrawable(){
         //bg paint and rect
         this.paintBg=new Paint();
         this.paintBg.setStyle(Paint.Style.FILL);
@@ -104,17 +93,51 @@ public class BackgroundAndRiver {
         this.paint = new Paint();
         paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
-
-
-
+    }
+    public void initSegments(){
         this.path=new Path();
         this.widths =new float[segmentNumber];
         for (int i =0;i<widths.length;i++){
             widths[i] = generateWidth();
         }
+    }
+
+
+
+
+    public GameController(Context context, double high, double width, int segmentNumber, long renderSpeed) {
+
+        this.context=context;
+        this.high = high;
+        this.width = width;
+
+
+        this.renderedObjectList=new ArrayList<>();
+
+        this.generateIterator=segmentNumber;
+        this.lastGeneratedValue=400;
+
+        this.renderIterator=0;
+
+        this.segmentNumber=segmentNumber;
+
+        this.renderSpeed=renderSpeed;
+
+        afterRender=false;
+        afterRender=true;
+
+        this.centerPointWidth =(float)( width/2);
+
+        this.highSegment=(float)(high/(segmentNumber-1));
+
+        this.random = new Random();
+
+        initDrawable();
+
+        initSegments();
 
         //obliczanie subHighObject
-        this.subHighObject = highSegment/renderSpeed;
+        this.subHighObject = (highSegment/(renderSpeed))-10;
 
 
 
@@ -173,43 +196,34 @@ public class BackgroundAndRiver {
             renderedObjectList= renderedObjectList.stream()
                     .peek(v->v.setHeight(v.height+subHighObject))
                     .collect(Collectors.toList());
-            //System.out.println("obnizenie");
-
 
             //renderowanie obiektów losowo na mapie
             renderedObjectList.stream().parallel()
                     .forEach(v-> canvas.drawBitmap(v.getBitmap(),v.width,v.height, this.paint));
-            //System.out.println("renderowanie obiektów");
+
 
             //usuwam niepotrzbene elemnenty z listy
             renderedObjectList = renderedObjectList.stream()
                     .filter(v-> !(v.height >= high))
                     .collect(Collectors.toList());
-            //System.out.println("usuwanie niepotrzebnych z listy");
 
-            //todo generowanie w różnych miejscach
-            // renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.boat,centerPointWidth,0));
-
-
-
-            //System.out.println("is rendering");
             afterRender = true;
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void update(Shoot shoot,GamePoint gamePoint) {
+    public void update(Shoot shoot,GamePoint gamePoint,Player player, GameInfo gameInfo) {
 
         //Wykrywanie kolizji
-        //todo nie działa
         renderedObjectList  =renderedObjectList.stream().peek(v->v.collision(shoot,gamePoint)).collect(Collectors.toList());
-
+        //wykrywanie kolizcji z graczem
+        renderedObjectList = renderedObjectList.stream().peek(v-> v.collision(player,gameInfo)).collect(Collectors.toList());
 
         if(afterRender){
             afterUpdate=false;
             //System.out.println("update");
             if(renderIterator>renderSpeed) {
-                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.boat,centerPointWidth,0));
+                generateObject();
                 System.out.println("dodanie do listy");
                 renderIterator=0;
                 if (widths.length - 1 >= 0)
@@ -221,4 +235,52 @@ public class BackgroundAndRiver {
            afterUpdate=true;
         }
     }
+    public void InitIterators(){
+
+
+        helicopterIterator=0;
+        boatIterator=0;
+        bridgeIterator=0;
+        fuelIterator=0;
+
+        //wartości maksymalne
+        helicopterItMax=segmentNumber*15;
+        boatItMax=segmentNumber*40;
+        bridgeIMax=segmentNumber*20;
+        fuelItMax=segmentNumber*10;
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void generateObject(){
+        //usuwanie niepotrzebnych elementów
+        renderedObjectList=   renderedObjectList.stream().parallel().filter(v->{
+            return !v.getRenderedObjectEnum().equals(RenderedObjectEnum.exp);
+        }).collect(Collectors.toList());
+
+        //renderowanie obiektów jest 2 razy losowane , raz obiekt a potem szerokość
+       int generatedIer= random.nextInt(200);
+
+                bridgeIterator++;
+        if(renderedObjectList.size()<=8) {
+
+
+            if (bridgeIterator >= bridgeIMax && widths[widths.length - 1] == (this.width / 10)) {
+                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.bridge, centerPointWidth, 0));
+                bridgeIterator = 0;
+            }
+            if (generatedIer > 0 && generatedIer <= 12) {
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
+                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.boat, objectWidth, 0));
+            }
+            if(generatedIer>12&&generatedIer<=20) {
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
+                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.fuel, objectWidth, 0));
+            }
+            if(generatedIer>20&&generatedIer<30) {
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
+                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.helicopter, objectWidth, 0));
+            }
+        }
+
+        }
 }

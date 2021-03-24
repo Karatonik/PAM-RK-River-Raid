@@ -36,6 +36,10 @@ public class GamePoint {
         canvas.drawText(String.valueOf(this.points),8*partOfWidth, 9*partOfHigh,paint);
     }
 
+    public int getPoints() {
+        return points;
+    }
+
     public void update() {
 
     }

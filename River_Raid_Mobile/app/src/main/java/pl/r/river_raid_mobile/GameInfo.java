@@ -1,12 +1,16 @@
 package pl.r.river_raid_mobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+
+import pl.r.river_raid_mobile.Activity.GameActivity;
+import pl.r.river_raid_mobile.Activity.MainActivity;
 
 public class GameInfo {
     private double high;
@@ -16,7 +20,7 @@ public class GameInfo {
     private Bitmap bitmapHp;
     private int hpLevel;
     public GameInfo(Context context,double high, double width) {
-        this.hpLevel=3;
+        this.hpLevel=1;
         this.high = high;
         this.width = width;
         this.fuelLevel=12;
@@ -27,6 +31,13 @@ public class GameInfo {
 
     public void setHpLevel(int hpLevel) {
         this.hpLevel = hpLevel;
+    }
+    public void subtractHpLevel(){
+        this.hpLevel=this.hpLevel-1;
+    }
+
+    public double getFuelLevel() {
+        return fuelLevel;
     }
 
     public void subtractFuel(){
@@ -80,6 +91,10 @@ public class GameInfo {
         for(int i =0;i<hpLevel;i++){
             canvas.drawBitmap(this.bitmapHp,(13+(i*2))*partOfWidth ,2*partOfHigh, paint);
         }
+    }
+
+    public int getHpLevel() {
+        return hpLevel;
     }
 
     public void update(int hpLevel) {

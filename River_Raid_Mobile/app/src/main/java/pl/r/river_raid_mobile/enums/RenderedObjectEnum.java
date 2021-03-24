@@ -1,7 +1,7 @@
 package pl.r.river_raid_mobile.enums;
 
 public enum RenderedObjectEnum {
-    helicopter("helicopter"),boat("boat"),bridge("bridge"),fuel("bridge"),exp("exp");
+    helicopter("helicopter"),boat("boat"),bridge("bridge"),fuel("fuel"),exp("exp");
 
 
     private final String name;

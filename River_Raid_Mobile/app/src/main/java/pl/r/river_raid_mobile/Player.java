@@ -49,8 +49,10 @@ public class Player {
     public int getHpLevel(){
         return  this.hpLevel;
     };
-    
-    
+
+    public void setHpLevel(int hpLevel) {
+        this.hpLevel = hpLevel;
+    }
 
     public void draw(Canvas canvas) {
         this.paint.setColor(Color.RED);

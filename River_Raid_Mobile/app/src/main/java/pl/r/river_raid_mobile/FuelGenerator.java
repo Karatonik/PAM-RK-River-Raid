@@ -15,9 +15,9 @@ public class FuelGenerator {
 
 
 
-    public FuelGenerator(Context context, BackgroundAndRiver backgroundAndRiver) {
+    public FuelGenerator(Context context, GameController gameController) {
         this.context=context;
-        this.widths=backgroundAndRiver.getWidths();
+        this.widths= gameController.getWidths();
         this.bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.fuel);
 
 
@@ -29,7 +29,7 @@ public class FuelGenerator {
     }
 
 
-    public void update(BackgroundAndRiver backgroundAndRiver) {
-        this.widths=backgroundAndRiver.getWidths();
+    public void update(GameController gameController) {
+        this.widths= gameController.getWidths();
     }
 }

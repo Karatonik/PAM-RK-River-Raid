@@ -20,7 +20,9 @@ public class RenderedObject {
         return bitmap;
     }
 
-
+    public RenderedObjectEnum getRenderedObjectEnum() {
+        return renderedObjectEnum;
+    }
 
     public void setHeight(float height) {
         this.height = height;
@@ -28,37 +30,37 @@ public class RenderedObject {
 
     public RenderedObject(Context context, RenderedObjectEnum roe, float width, float height) {
 
-        this.context=context;
+        this.context = context;
 
         this.width = width;
         this.height = height;
 
 
-
-        switch (roe){
-            case boat:{
-                this.renderedObjectEnum=RenderedObjectEnum.boat;
-                bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.boat);
+        switch (roe) {
+            case boat: {
+                this.renderedObjectEnum = RenderedObjectEnum.boat;
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.boat);
                 break;
             }
-            case fuel:{
-                this.renderedObjectEnum=RenderedObjectEnum.fuel;
-                bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.fuel);
+            case fuel: {
+                this.renderedObjectEnum = RenderedObjectEnum.fuel;
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.fuel);
                 break;
             }
-            case bridge:{
-                this.renderedObjectEnum=RenderedObjectEnum.bridge;
-                bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.bridge);
+            case bridge: {
+                this.renderedObjectEnum = RenderedObjectEnum.bridge;
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.bridge);
                 break;
             }
-            case helicopter:{
-                this.renderedObjectEnum=RenderedObjectEnum.helicopter;
-                bitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.helicopter);
+            case helicopter: {
+                this.renderedObjectEnum = RenderedObjectEnum.helicopter;
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.helicopter);
                 break;
             }
         }
     }
-    public void collision(Shoot shoot,GamePoint gamePoint) {
+
+    public void collision(Shoot shoot, GamePoint gamePoint) {
         //todo kolizja 32/32
         if (shoot.isInMove()) {
             if (!renderedObjectEnum.equals(RenderedObjectEnum.exp)) {
@@ -67,14 +69,34 @@ public class RenderedObject {
                         && (shoot.getBulletHeight() <= this.height + 64)
                         && (shoot.getBulletHeight() >= this.height - 64)) {
                     //todo sprecyzować kolizję
-                    renderedObjectEnum=RenderedObjectEnum.exp;
+                    renderedObjectEnum = RenderedObjectEnum.exp;
                     shoot.setInMove(false);
                     bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp);
                     gamePoint.setPoints(30);
                 }
 
 
+            }
+        }
+    }
 
+    public void collision(Player player, GameInfo gameInfo) {
+        //todo kolizja 32/32
+        if (!renderedObjectEnum.equals(RenderedObjectEnum.exp)) {
+
+            if ((player.getPlayerPosX()<= this.width + 64) && (player.getPlayerPosX()>= this.width - 64)
+                    && (player.getPlayerPosY() <= this.height + 64)
+                    && (player.getPlayerPosY() >= this.height - 64)) {
+
+                if(renderedObjectEnum.equals(RenderedObjectEnum.fuel)){
+                    renderedObjectEnum = RenderedObjectEnum.exp;
+                    gameInfo.addFuel();
+                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp);
+                }else {
+                    renderedObjectEnum = RenderedObjectEnum.exp;
+                    player.setHpLevel(player.getHpLevel()-1);
+                    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.exp);
+                }
             }
         }
     }
