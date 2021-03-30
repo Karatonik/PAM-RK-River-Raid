@@ -31,8 +31,12 @@ public class GameLoop extends Thread {
         start();
     }
     public void stopLoop(){
-        isRunning=false;
-        interrupt();
+        isRunning = false;
+        try {
+            join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -137,8 +137,12 @@ public class GameController {
         initSegments();
 
         //obliczanie subHighObject
-        this.subHighObject = (highSegment/(renderSpeed))-10;
+        this.subHighObject = highSegment/(renderSpeed)-4;
 
+
+
+        //most
+        this.bridgeIMax=segmentNumber*10;
 
 
     }
@@ -199,7 +203,7 @@ public class GameController {
 
             //renderowanie obiektów losowo na mapie
             renderedObjectList.stream().parallel()
-                    .forEach(v-> canvas.drawBitmap(v.getBitmap(),v.width,v.height, this.paint));
+                    .forEach(v-> canvas.drawBitmap(v.getBitmap(),v.width,v.height, paint));
 
 
             //usuwam niepotrzbene elemnenty z listy
@@ -212,12 +216,18 @@ public class GameController {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void update(Shoot shoot,GamePoint gamePoint,Player player, GameInfo gameInfo) {
+    public void update(Shoot shoot,GamePoint gamePoint,Player player, GameInfo gameInfo,AudioController audioController) {
 
         //Wykrywanie kolizji
         renderedObjectList  =renderedObjectList.stream().peek(v->v.collision(shoot,gamePoint)).collect(Collectors.toList());
         //wykrywanie kolizcji z graczem
-        renderedObjectList = renderedObjectList.stream().peek(v-> v.collision(player,gameInfo)).collect(Collectors.toList());
+        renderedObjectList = renderedObjectList.stream().peek(v-> v.collision(player,gameInfo,audioController)).collect(Collectors.toList());
+
+
+
+
+
+
 
         if(afterRender){
             afterUpdate=false;
@@ -226,6 +236,26 @@ public class GameController {
                 generateObject();
                 System.out.println("dodanie do listy");
                 renderIterator=0;
+
+                //ruch helikopterów
+                renderedObjectList = renderedObjectList.stream().parallel().peek(v->{
+                    if(v.getRenderedObjectEnum().equals(RenderedObjectEnum.helicopterL)
+                            ||v.getRenderedObjectEnum().equals(RenderedObjectEnum.helicopterP)){
+                        int temp=random.nextInt(100);
+                        if(temp<25){
+                            v.width+=30;
+                            v.setBitmap(RenderedObjectEnum.helicopterP);
+                        }
+                        if(temp>25&&temp<50){
+                            v.width-=30;
+                            v.setBitmap(RenderedObjectEnum.helicopterL);
+                        }
+
+                    }
+                }).collect(Collectors.toList());
+
+
+
                 if (widths.length - 1 >= 0)
                     System.arraycopy(widths, 1, widths, 0, widths.length - 1);
                 widths[segmentNumber - 1] = generateWidth();
@@ -260,25 +290,18 @@ public class GameController {
         //renderowanie obiektów jest 2 razy losowane , raz obiekt a potem szerokość
        int generatedIer= random.nextInt(200);
 
-                bridgeIterator++;
-        if(renderedObjectList.size()<=8) {
-
-
-            if (bridgeIterator >= bridgeIMax && widths[widths.length - 1] == (this.width / 10)) {
-                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.bridge, centerPointWidth, 0));
-                bridgeIterator = 0;
-            }
+        if(renderedObjectList.size()<=16) {
             if (generatedIer > 0 && generatedIer <= 12) {
-                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 100 + (2 * (widths[widths.length - 1] -100)) * random.nextFloat();
                 renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.boat, objectWidth, 0));
             }
             if(generatedIer>12&&generatedIer<=20) {
-                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 100 + (2 * (widths[widths.length - 1] -100)) * random.nextFloat();
                 renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.fuel, objectWidth, 0));
             }
             if(generatedIer>20&&generatedIer<30) {
-                float objectWidth = centerPointWidth - widths[widths.length - 1] + 50 + (2 * (widths[widths.length - 1] -50)) * random.nextFloat();
-                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.helicopter, objectWidth, 0));
+                float objectWidth = centerPointWidth - widths[widths.length - 1] + 100 + (2 * (widths[widths.length - 1] -100)) * random.nextFloat();
+                renderedObjectList.add(new RenderedObject(context, RenderedObjectEnum.helicopterP, objectWidth, 0));
             }
         }
 

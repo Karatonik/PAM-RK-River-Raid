@@ -59,23 +59,21 @@ public class Player {
         return playerPosY;
     }
 
-    public void update(Joystick joystick, double maxWidth,GameInfo gameInfo) {
+    public void update(Joystick joystick, double maxWidth) {
         setPlayerRotation(joystick.getActuatorX());
 
         double temp=playerPosX+joystick.getActuatorX()*playerMaxSpeed;
-        if(playerPosX<centerWidth-maxWidth-bitmapPlayer.getWidth()){
-            playerPosX=centerWidth;
-           gameInfo.subtractHpLevel();
-        }
-        if(playerPosX>centerWidth+maxWidth-bitmapPlayer.getWidth()){
-            playerPosX=centerWidth;
-            gameInfo.subtractHpLevel();
-        }
 
-        //jak trafi w wyspę todo
 
         if((temp>=centerWidth-maxWidth)&&(temp<=(centerWidth+maxWidth-bitmapPlayer.getWidth()))){
             playerPosX=temp;
+        }else {
+            if (centerWidth<playerPosX){
+                playerPosX=centerWidth+maxWidth-bitmapPlayer.getWidth();
+            }else {
+                playerPosX=centerWidth-maxWidth;
+            }
+
         }
     }
 }

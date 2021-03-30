@@ -33,6 +33,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     double width;
     double height;
+    private AudioController audioController;
 
 
     public Game(Context context) {
@@ -47,7 +48,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         surfaceHolder.addCallback(this);
         gameLoop = new GameLoop(this,surfaceHolder);
 
-
+        this.audioController= new AudioController(getContext());
 
 
         loadMenu();
@@ -59,15 +60,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if(loseGame){
 
             gameMenu = new GameMenu((float) width,(float) height,gamePoint.getPoints());
+            audioController.getAplause();
         }
     }
 
 
     public void loadGame(){
+        audioController.stopAplause();
 
         gamePoint = new GamePoint(0,height/8,width);
 
-        controller = new GameController(getContext(),height,width,40,3);
+        controller = new GameController(getContext(),height,width,70,3);
 
         gameInfo = new GameInfo(getContext(),height/8,width);
 
@@ -77,7 +80,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         shootButton.setPosition( (float) (3*(width/4)-(height/12)),(float) (9*(height/10)-(height/12)));
 
         player = new Player(getContext(),width/2,(width/2),6*(height/8),15);
-        shoot = new Shoot(getContext(),player,(float) height/8,20);
+        shoot = new Shoot(getContext(),player,(float) height/8,40);
+    }
+    public void pause() {
+        gameLoop.stopLoop();
     }
 
 
@@ -154,9 +160,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         //FPS i UPS
-       /* drawFPS(canvas);
+        drawFPS(canvas);
         drawUPS(canvas);
-       */
+
     }
 
     public void drawUPS(Canvas canvas){
@@ -181,10 +187,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if(onMenu) {
             ///////////////////
         }else {//gra
-            controller.update(shoot, gamePoint,player ,gameInfo);
+            audioController.update(gameInfo.getFuelLevel());
+
+            controller.update(shoot, gamePoint,player ,gameInfo,audioController);
             gamePoint.update();
             joystick.update();
-            player.update(joystick, controller.getWidthForPlayerMove(),gameInfo);
+            player.update(joystick, controller.getWidthForPlayerMove());
             shoot.update(shootButton, (float) player.getPlayerPosX());
             gameInfo.update();
             if(gameInfo.getHpLevel()==0){//brak żyć wraca do start

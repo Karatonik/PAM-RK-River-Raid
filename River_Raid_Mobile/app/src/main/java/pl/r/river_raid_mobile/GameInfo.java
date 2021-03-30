@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 
 import pl.r.river_raid_mobile.Activity.GameActivity;
 import pl.r.river_raid_mobile.Activity.MainActivity;
@@ -19,6 +20,7 @@ public class GameInfo {
     private Context context;
     private Bitmap bitmapHp;
     private int hpLevel;
+    private MediaPlayer mediaPlayer;
     public GameInfo(Context context,double high, double width) {
         this.hpLevel=3;
         this.high = high;
@@ -26,6 +28,7 @@ public class GameInfo {
         this.fuelLevel=12;
         this.context=context;
          this.bitmapHp= BitmapFactory.decodeResource(context.getResources(),R.drawable.player);
+
 
     }
 
