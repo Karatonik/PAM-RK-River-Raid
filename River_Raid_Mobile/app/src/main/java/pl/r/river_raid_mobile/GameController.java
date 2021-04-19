@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 import pl.r.river_raid_mobile.enums.RenderedObjectEnum;
 
 public class GameController {
-
     //flags
     boolean afterRender;
+    //spwolnienie gry
+    boolean slowGame;
+
     boolean afterUpdate;
     boolean canBeIsland;
     //generowanie obiektów na mapie - iteratory()
@@ -61,6 +63,7 @@ public class GameController {
         this.high = high;
         this.width = width;
 
+        this.slowGame=true;
 
         this.renderedObjectList = new ArrayList<>();
 
@@ -181,11 +184,28 @@ public class GameController {
     }
     public void changeRenderSpeed(Double actuator){
 
-        if(actuator>0) {
-            this.subHighObject = highSegment / (renderSpeed + 20);
-        }else {
-            this.subHighObject = highSegment / (renderSpeed ) - 4;
+        if(actuator<0) {
+            System.out.println("góra");
+            if(slowGame){//jeżeli występuje spowolnienie
+                slowGame=false;
+                renderSpeed=renderSpeed-1;
+                this.subHighObject = highSegment / (renderSpeed) - 4;
+            }
+
         }
+
+        if(actuator>0){
+            System.out.println("dół");
+            if(!slowGame){//jeżeli nie występuje spowonienie
+                slowGame=true;
+                renderSpeed=renderSpeed+1;
+                this.subHighObject = highSegment / (renderSpeed) - 4;
+            }
+
+        }
+
+
+
     }
 
 
@@ -207,7 +227,6 @@ public class GameController {
 
                 generateObject();
 
-                System.out.println("dodanie do listy");
                 renderIterator = 0;
                 bridgeIterator++;
 
