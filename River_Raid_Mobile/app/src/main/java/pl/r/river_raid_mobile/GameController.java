@@ -179,15 +179,31 @@ public class GameController {
             afterRender = true;
         }
     }
+    public void changeRenderSpeed(Double actuator){
+
+        if(actuator>0) {
+            this.subHighObject = highSegment / (renderSpeed + 20);
+        }else {
+            this.subHighObject = highSegment / (renderSpeed ) - 4;
+        }
+    }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void update(Shoot shoot, GamePoint gamePoint, Player player, GameInfo gameInfo, AudioController audioController) {
+    public void update(Shoot shoot, GamePoint gamePoint, Player player, GameInfo gameInfo, AudioController audioController, Joystick joystick) {
 
         getCollisions(shoot,gamePoint, player, gameInfo, audioController);
 
+
+
+
         if (afterRender) {
+
             afterUpdate = false;
             if (renderIterator > renderSpeed) {
+
+                changeRenderSpeed(joystick.getActuatorY());
 
                 generateObject();
 

@@ -189,7 +189,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }else {//gra
             audioController.update(gameInfo.getFuelLevel());
 
-            controller.update(shoot, gamePoint,player ,gameInfo,audioController);
+            controller.update(shoot, gamePoint,player ,gameInfo,audioController,joystick);
             gamePoint.update();
             joystick.update();
             player.update(joystick, controller.getWidthForPlayerMove());
