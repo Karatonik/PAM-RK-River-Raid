@@ -28,13 +28,19 @@ public class AudioController {
             mpAplause.stop();
         }
     }
-
+    public  void stopMpGame(){
+        mpGame.stop();
+    }
 
 
     public  void update(double fuelLevel){
-        if(!mpGame.isPlaying()){
-            mpGame.start();
-        }
+
+            if(!mpGame.isPlaying()){
+                mpGame.start();
+            }
+
+
+
         if(fuelLevel<6&& !(mpFuel.isPlaying())){
             mpFuel.start();
         }

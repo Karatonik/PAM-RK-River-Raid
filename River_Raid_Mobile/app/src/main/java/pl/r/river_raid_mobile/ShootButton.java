@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 public class ShootButton {
@@ -16,9 +17,11 @@ public class ShootButton {
     float height;
     Bitmap bg;
     boolean iWantShoot;
+    Paint paint;
 
     public ShootButton(Context context, float width, float height)
     {
+        paint = new Paint();
         iWantShoot=false;
         this.width = width;
         this.height = height;
@@ -35,7 +38,7 @@ public class ShootButton {
 
     public void draw(Canvas canvas)
     {
-        canvas.drawBitmap(bg, btn_matrix, null);
+        canvas.drawBitmap(bg, btn_matrix, paint);
     }
 
     public boolean isiWantShoot() {

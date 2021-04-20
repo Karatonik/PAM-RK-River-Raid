@@ -24,8 +24,6 @@ public class FuelGenerator {
     }
 
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
-        //canvas.drawBitmap(this.bitmap, (float)this.playerPosX,(float) this.playerPosY, this.paint);
     }
 
 

@@ -1,7 +1,10 @@
 package pl.r.river_raid_mobile;
 
 import android.graphics.Canvas;
+import android.os.Build;
 import android.view.SurfaceHolder;
+
+import androidx.annotation.RequiresApi;
 
 public class GameLoop extends Thread {
     //ustawienie UPS i FPS
@@ -14,8 +17,8 @@ public class GameLoop extends Thread {
     private double averageFPS;
 
     public GameLoop(Game game, SurfaceHolder surfaceHolder) {
-        this.surfaceHolder = surfaceHolder;
         this.game = game;
+        this.surfaceHolder = surfaceHolder;
     }
 
     public double getAverageUPS() {
@@ -39,6 +42,7 @@ public class GameLoop extends Thread {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void run() {
         super.run();

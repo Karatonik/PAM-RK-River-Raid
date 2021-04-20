@@ -185,8 +185,7 @@ public class GameController {
     public void changeRenderSpeed(Double actuator){
 
         if(actuator<0) {
-            System.out.println("góra");
-            if(slowGame){//jeżeli występuje spowolnienie
+            if(slowGame){
                 slowGame=false;
                 renderSpeed=renderSpeed-1;
                 this.subHighObject = highSegment / (renderSpeed) - 4;
@@ -195,8 +194,7 @@ public class GameController {
         }
 
         if(actuator>0){
-            System.out.println("dół");
-            if(!slowGame){//jeżeli nie występuje spowonienie
+            if(!slowGame){
                 slowGame=true;
                 renderSpeed=renderSpeed+1;
                 this.subHighObject = highSegment / (renderSpeed) - 4;

@@ -47,8 +47,7 @@ public class Player {
 
 
     public void draw(Canvas canvas) {
-        this.paint.setColor(Color.RED);
-        canvas.drawBitmap(this.bitmapPlayer, (float)this.playerPosX,(float) this.playerPosY, this.paint);
+        canvas.drawBitmap(this.bitmapPlayer, (float)this.playerPosX,(float) this.playerPosY, paint);
     }
 
     public double getPlayerPosX() {

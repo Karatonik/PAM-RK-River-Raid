@@ -10,7 +10,7 @@ public class GamePoint {
     private double high;
     private double width;
     private Paint paint;
-
+    float partOfWidth , partOfHigh;
 
     public GamePoint(int points, double high, double width) {
         this.points = points;
@@ -20,6 +20,11 @@ public class GamePoint {
         paint.setColor(Color.YELLOW);
         paint.setStrokeWidth(30);
         paint.setTextSize(150);
+
+         partOfWidth=(float) width/20;
+         partOfHigh=(float) high/20;
+
+
     }
 
     public void addPoint(){
@@ -31,8 +36,6 @@ public class GamePoint {
     }
 
     public void draw(Canvas canvas) {
-        float partOfWidth=(float) width/20;
-        float partOfHigh=(float) high/20;
         canvas.drawText(String.valueOf(this.points),8*partOfWidth, 9*partOfHigh,paint);
     }
 

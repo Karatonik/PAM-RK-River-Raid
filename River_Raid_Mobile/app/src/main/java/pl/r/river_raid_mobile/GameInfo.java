@@ -1,7 +1,6 @@
 package pl.r.river_raid_mobile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,9 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
-
-import pl.r.river_raid_mobile.Activity.GameActivity;
-import pl.r.river_raid_mobile.Activity.MainActivity;
 
 public class GameInfo {
     private double high;
@@ -21,6 +17,9 @@ public class GameInfo {
     private Bitmap bitmapHp;
     private int hpLevel;
     private MediaPlayer mediaPlayer;
+    float partOfWidth,partOfHigh;
+    Paint paintbg,paintFuel ,paint1,paint2,paint3;
+    RectF rectbg, rectFuel;
     public GameInfo(Context context,double high, double width) {
         this.hpLevel=3;
         this.high = high;
@@ -29,6 +28,39 @@ public class GameInfo {
         this.context=context;
          this.bitmapHp= BitmapFactory.decodeResource(context.getResources(),R.drawable.player);
 
+       this.partOfWidth=(float) width/20;
+        this.partOfHigh=(float) high/20;
+
+        //bg
+         paintbg=new Paint();
+        paintbg.setColor(Color.rgb(51,51,51));
+        paintbg.setStyle(Paint.Style.FILL);
+         rectbg = new RectF(0,0,(float) this.width,(float)this.high);
+
+         //fuel
+        paintFuel=new Paint();
+        paintFuel.setColor(Color.BLACK);
+        paintFuel.setStyle(Paint.Style.STROKE);
+        paintFuel.setStrokeWidth(20);
+        rectFuel= new RectF(4*partOfWidth,12*partOfHigh,16*partOfWidth,18*partOfHigh);
+
+        //1
+        paint1=new Paint();
+        paint1.setColor(Color.BLACK);
+        paint1.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint1.setStrokeWidth(20);
+
+        //2
+        paint2 = new Paint();
+        paint2.setColor(Color.BLACK);
+        paint2.setStrokeWidth(15);
+        paint2.setTextSize(60);
+
+        //3
+        paint3=new Paint();
+        paint3.setColor(Color.YELLOW);
+        paint3.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint3.setStrokeWidth(20);
 
     }
 
@@ -54,45 +86,32 @@ public class GameInfo {
     }
 
     public void draw(Canvas canvas) {
-        float partOfWidth=(float) width/20;
-        float partOfHigh=(float) high/20;
+
         //bg
-        Paint paint=new Paint();
-        paint.setColor(Color.rgb(51,51,51));
-        paint.setStyle(Paint.Style.FILL);
-        RectF rect = new RectF(0,0,(float) this.width,(float)this.high);
-        canvas.drawRect(rect,paint);
+        canvas.drawRect(rectbg,paintbg);
         //tabelka paliwa
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(20);
-        rect= new RectF(4*partOfWidth,12*partOfHigh,16*partOfWidth,18*partOfHigh);
-        canvas.drawRect(rect,paint);
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        canvas.drawLine(10*partOfWidth,12*partOfHigh,10*partOfWidth,14*partOfHigh,paint);
-        canvas.drawLine(5*partOfWidth,12*partOfHigh,5*partOfWidth, 14*partOfHigh,paint);
-        canvas.drawLine(15*partOfWidth,12*partOfHigh,15*partOfWidth,14*partOfHigh,paint);
+        canvas.drawRect(rectFuel,paintFuel);
 
 
-        paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(15);
-        paint.setTextSize(60);
-        canvas.drawText("E",5*partOfWidth,17*partOfHigh,paint);
-        canvas.drawText("F",15*partOfWidth,17*partOfHigh,paint);
 
-        paint=new Paint();
-        paint.setColor(Color.YELLOW);
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setStrokeWidth(20);
+        canvas.drawLine(10*partOfWidth,12*partOfHigh,10*partOfWidth,14*partOfHigh,paint1);
+        canvas.drawLine(5*partOfWidth,12*partOfHigh,5*partOfWidth, 14*partOfHigh,paint1);
+        canvas.drawLine(15*partOfWidth,12*partOfHigh,15*partOfWidth,14*partOfHigh,paint1);
+
+
+        //
+        canvas.drawText("E",5*partOfWidth,17*partOfHigh,paint2);
+        canvas.drawText("F",15*partOfWidth,17*partOfHigh,paint2);
+
+
         canvas.drawLine((16*partOfWidth)-((float) (12-fuelLevel)*partOfWidth),14*partOfHigh,
-                (16*partOfWidth)-((float) (12-fuelLevel)*partOfWidth),18*partOfHigh,paint);
+                (16*partOfWidth)-((float) (12-fuelLevel)*partOfWidth),18*partOfHigh,paint3);
 
 
         //hp
 
         for(int i =0;i<hpLevel;i++){
-            canvas.drawBitmap(this.bitmapHp,(13+(i*2))*partOfWidth ,2*partOfHigh, paint);
+            canvas.drawBitmap(this.bitmapHp,(13+(i*2))*partOfWidth ,2*partOfHigh, paint3);
         }
     }
 
